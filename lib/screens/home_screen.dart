@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:weather_app/models/services/weather_api_service.dart';
+import 'package:weather_app/models/weather/weather_response.dart';
 import 'package:weather_app/screens/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.city});
+  final String city;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  WeatherApiService weatherApi = WeatherApiService();
+  WeatherResponse? weatherResponse;
+  @override
+  void initState() {
+    weatherApi.getWeather(city: widget.city).then((value) {
+      setState(() {
+        weatherResponse = value;
+      });
+      weatherList.add(weatherResponse!);
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                  'https://lh5.googleusercontent.com/proxy/WZqK-8yShdBNaakEegUbs-0IF1RdHJLTxrJlm7yuIp7KG8dfyR_ZhkvRGydWl-mOxI82HLk4I_7-1ZKPlAknitC7zwRTtEYdHKQmMPFOng',
+                  weatherApi.image ??
+                      'https://images.pexels.com/photos/33481470/pexels-photo-33481470.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
                 ),
                 fit: BoxFit.fill,
               ),
@@ -46,33 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 0,
             right: 0,
             child: Text(
-              'Alexandra',
+              weatherResponse?.location.name.toString() ?? '',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
             ),
           ),
           Positioned(
-            top: 200,
+            top: 170,
             left: 0,
             right: 0,
             child: Text(
-              '38°',
+              '${weatherResponse?.current.tempC.toString() ?? ''}°',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 70, fontWeight: FontWeight.w700),
             ),
           ),
           Positioned(
-            top: 290,
+            top: 270,
             left: 0,
             right: 0,
             child: Text(
-              'clear  38° / 25°',
+              'clear ${weatherResponse?.current.tempC.toDouble() ?? ''}°/ ${weatherResponse?.current.tempF.toDouble() ?? ''}°',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
           ),
           Positioned(
-            top: 320,
+            top: 310,
             left: 0,
             right: 0,
             child: Center(
@@ -97,18 +115,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Positioned(
-            bottom: -90,
+            bottom: 10,
             left: 10,
             right: 10,
             child: LiquidGlassLayer(
               child: LiquidGlass(
                 shape: LiquidRoundedSuperellipse(borderRadius: 30),
-                child: const SizedBox(
-                  height: 275,
-                  width: 410,
+                child: SizedBox(
+                  height: 200,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.all(15.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.grey,
+                                color: Colors.white,
                               ),
                             ),
                             Text(
@@ -126,59 +144,52 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '🌤️ Mon clear',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              '39° / 26°',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '☀️ Tue clear',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                      const SizedBox(height: 5),
+
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount:
+                              weatherResponse?.forecast.forecastDay.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final day = weatherResponse!
+                                .forecast
+                                .forecastDay[index]
+                                .day;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5,
+                                horizontal: 15,
                               ),
-                            ),
-                            Text(
-                              ' 39° / 26°',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '🌤️mon clear',
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${day.maxTempC}° / ${day.minTempC}°',
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -192,3 +203,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+List<WeatherResponse> weatherList = [];

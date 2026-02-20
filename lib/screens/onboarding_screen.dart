@@ -21,7 +21,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           gradient: LinearGradient(
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            stops: [0, 0.7],
+            stops: [0.1, 0.8],
             colors: [Color(0xff595890), Colors.white],
           ),
         ),
@@ -43,7 +43,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen(city: 'alex',)),
                 );
               },
               child: Container(
@@ -51,6 +51,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 47,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
+                    stops: [0.2, 0.9],
                     colors: [Color(0xff4da6d9), Color(0xffb1d8ee)],
                   ),
                   borderRadius: BorderRadius.circular(30),
