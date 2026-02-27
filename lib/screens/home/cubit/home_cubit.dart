@@ -16,7 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       emit(HomeLoading());
       Response response = await dio.get(
-        '${ApiConstants.baseUrl}forecast.json?key=${ApiConstants.apiKey}&q=$city&days=4&aqi=no&alerts=no',
+        '${ApiConstants.baseUrl}forecast.json?key=${ApiConstants.apiKey}&q=$city&days=5&aqi=no&alerts=no',
       );
       String image = await getImage(city);
 

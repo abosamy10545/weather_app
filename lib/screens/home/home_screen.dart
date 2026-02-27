@@ -146,13 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(15.0),
+                                // 👇 LiquidGlass forecast section
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      const Text(
                                         '5-day forecast',
                                         style: TextStyle(
                                           fontSize: 20,
@@ -160,7 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           color: Colors.white,
                                         ),
                                       ),
-                                      Text(
+
+                                      const Text(
                                         'More details ‣',
                                         style: TextStyle(
                                           fontSize: 20,
@@ -172,51 +174,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 5),
-
-                                Expanded(
-                                  child: ListView.builder(
-                                    itemCount:
-                                        weatherResponse
-                                            ?.forecast
-                                            .forecastDay
-                                            .length ??
-                                        0,
-                                    itemBuilder: (context, index) {
-                                      final day = weatherResponse!
-                                          .forecast
-                                          .forecastDay[index]
-                                          .day;
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: 15,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              '🌤️mon clear',
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w700,
-                                                color: Colors.white,
-                                              ),
+                                
+                                if (weatherResponse != null)
+                                  Column(
+                                    children: weatherResponse!
+                                        .forecast
+                                        .forecastDay
+                                        .take(5)
+                                        .map((forecastDay) {
+                                          final day = forecastDay.day;
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 8,
+                                              horizontal: 15,
                                             ),
-                                            Text(
-                                              '${day.maxTempC}° / ${day.minTempC}°',
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w700,
-                                                color: Colors.white,
-                                              ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  forecastDay.date,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "${day.maxTempC}°C / ${day.minTempC}°F",
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                          );
+                                        })
+                                        .toList(),
                                   ),
-                                ),
                               ],
                             ),
                           ),

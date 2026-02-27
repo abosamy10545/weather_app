@@ -43,7 +43,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen(city: 'alex',)),
+                  MaterialPageRoute(
+                    builder: (context) => HomeScreen(city: 'cairo'),
+                  ),
                 );
               },
               child: Container(
