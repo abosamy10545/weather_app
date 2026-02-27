@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
+import 'package:weather_app/models/weather/weather_response.dart';
 
-import 'package:weather_app/screens/home_screen.dart';
+import 'package:weather_app/screens/home/home_screen.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({super.key, required this.weatherList});
+  final List<WeatherResponse> weatherList;
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -74,7 +76,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: SizedBox(
                 height: 300,
                 child: ListView.builder(
-                  itemCount: weatherList.length,
+                  itemCount: widget.weatherList.length,
                   itemBuilder: (ctx, index) {
                     return Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
@@ -98,7 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  weatherList[index].location.name,
+                                  widget.weatherList[index].location.name,
                                   style: const TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.w700,
@@ -118,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ),
                                     SizedBox(width: 10),
                                     Text(
-                                      '${weatherList[index].current.tempC}°/ ${weatherList[index].current.tempF}°',
+                                      '${widget.weatherList[index].current.tempC}°/ ${widget.weatherList[index].current.tempF}°',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
@@ -130,7 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               ],
                             ),
                             Text(
-                              '${weatherList[index].current.tempC.toString()}°',
+                              '${widget.weatherList[index].current.tempC.toString()}°',
                               style: const TextStyle(
                                 fontSize: 40,
                                 fontWeight: FontWeight.w700,
